@@ -64,6 +64,48 @@ namespace ANN.Data
         }
 
         ///<summary>
+        ///normalizes input vectors according to the zscore function. Outputs are normalized by dividing by ther maximum.
+        ///</summary>
+        public static void normlizeDataZScore(List<TrainingData> t, double oMax = 1.0f, double oMin = 0.0f)
+        {
+            double mean = 0.0f;
+            double var = 0.0f;
+
+            //normalize Input
+            for (int i = 0; i < t[0].input.Count(); i++)
+            {
+                mean = 0;
+                var = 0;
+                for (int j = 0; j < t.Count(); j++)
+                {
+                    mean = mean + t[j].input[i];
+                    var = var + t[j].input[i] * t[j].input[i];
+                }
+                mean = mean / t.Count();
+                var = (var - t.Count() * mean * mean) / (t.Count() - 1);
+                for (int j = 0; j < t.Count(); j++)
+                    t[j].input[i] = (t[j].input[i] - mean) / var;
+            }
+
+            //normalize Outputs
+            double Max = 0.0f;
+            double Min = 0.0f;
+            for (int i = 0; i < t[0].output.Count(); i++)
+            {
+                Max = t[0].output[i];
+                Min = Max;
+                for (int j = 1; j < t.Count(); j++)
+                {
+                    if (Max < t[j].output[i])
+                        Max = t[j].output[i];
+                    if (Min > t[j].output[i])
+                        Min = t[j].output[i];
+                }
+                for (int j = 0; j < t.Count(); j++)
+                    t[j].output[i] = (((t[j].output[i] - Min) * (oMax - oMin)) / (Max - Min)) + oMin;
+            }
+        }
+        ///<summary>
         ///normalizes input vectors in range 0 to 1
         ///</summary>
         public static void normalizeData(List<TrainingData> t)

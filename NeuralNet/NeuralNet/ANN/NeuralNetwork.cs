@@ -178,7 +178,7 @@ namespace ANN
             //Population
             List<NeuralNetwork> pop = new List<NeuralNetwork>();
             List<TrainingData> td = TrainingData.createTrainingData(s.TrainingDataFilePath, s.InputNeurons, s.SplitChar);
-            TrainingData.normalizeData(td);
+            TrainingData.normlizeDataZScore(td);
             SetTrainingData(td);
             //generation
             int g = 1;
